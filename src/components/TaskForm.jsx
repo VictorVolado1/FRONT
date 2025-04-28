@@ -6,7 +6,7 @@ import { Message } from "primereact/message";
 import { setError } from "../slices/tasks";
 import TasksService from "../services/Tasks";
 
-export const TaskForm = () => {
+export const TaskForm = ({onClose}) => {
 
   const tasksService = new TasksService();
 
@@ -27,7 +27,8 @@ export const TaskForm = () => {
     e.preventDefault();
     dispatch(setError(null));
     try {
-      await tasksService.createTask(formState);
+      tasksService.createTask(formState);
+      onClose();
     }
     catch (err) {
       dispatch(setError(err.message || "Error al crear la tarea"));

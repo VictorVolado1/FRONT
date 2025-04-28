@@ -6,13 +6,14 @@ const tasksSlice = createSlice({
     task: {},
     tasksList: [],
     error: null,
-    isLoading: false
+    isLoading: false,
   },
   reducers: {
     clearTasks: (state) => {
       state.tasksList = [];
       state.error = null;
       state.isLoading = false;
+      state.task = {};
     },
     setTasks: (state, action) => {
       state.tasksList = action.payload;
@@ -25,7 +26,7 @@ const tasksSlice = createSlice({
     },
     setError: (state, action) => {
       state.error = action.payload;
-    },
+    }
   },
 });
 

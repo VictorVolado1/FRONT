@@ -104,7 +104,7 @@ export const Tasks = () => {
 				onHide={() => setIsModalOpen(false)}
 				breakpoints={{ "960px": "75vw", "641px": "90vw" }}
 			>
-				<TaskForm />
+				<TaskForm  onClose={() => setIsModalOpen(false)}/>
 			</Dialog>
 
 		</div>

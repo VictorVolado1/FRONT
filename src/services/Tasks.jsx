@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { useToast } from '../hooks/useToast';
-import { clearTasks, setTasks } from '../slices/tasks';
+import { clearTasks, setError, setTasks } from '../slices/tasks';
 import { setIsLoading } from '../slices/tasks';
 import api from '../utils/api';
 
@@ -14,24 +14,31 @@ class TasksService {
   }
 
   createTask(payload) {
-
     this.dispatch(setIsLoading(true));
     
     return api('POST', 'tasks/', payload)
       .then((response) => {
-        this.showToast('Se ha registrado correctamente!', 'success');
-        this.navigate('/tasks');
+        this.showToast({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Tarea creada correctamente'
+        });
+        this.clearTasks(); 
+        this.getTasks();
       })
       .catch((error) => {
-        this.dispatch(setError(error.response.data || error.message));
+        this.dispatch(setError(error.response?.data || error.message));
+        this.showToast({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.response?.data?.message || 'Error al crear tarea'
+        });
       })
       .finally(() => {
         this.dispatch(setIsLoading(false));
       });
-  
-    }
+  }
 
-  // Obtener Tasks
   getTasks() {
     return api('GET', 'tasks/')
       .then((response) => {
@@ -39,13 +46,15 @@ class TasksService {
           this.dispatch(setTasks(response));
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        this.dispatch(setError(error.response.data || error.message));
+      });
   }
 
   clearTasks() {
     this.dispatch(clearTasks());
   }
-  
+
 }
 
 export default TasksService;
