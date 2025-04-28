@@ -33,7 +33,7 @@ class UserService {
     localStorage.removeItem('token');
 
     const { name, ...payloadWithoutName } = payload;
-    console.log(payloadWithoutName);
+
     api('POST', 'auth/login', payloadWithoutName)
       .then((response) => {
         localStorage.setItem('token', response.token);

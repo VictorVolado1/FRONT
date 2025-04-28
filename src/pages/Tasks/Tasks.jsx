@@ -53,8 +53,6 @@ export const Tasks = () => {
 		);
 	};
 
-	console.log(tasksList);
-
 	return (
 		<div>
 			<SearchBar
