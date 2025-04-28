@@ -2,7 +2,7 @@ import React from 'react';
 import { Toolbar } from 'primereact/toolbar';
 import { Avatar } from 'primereact/avatar';
 
-const TopBar = () => {
+export const TopBar = () => {
 
     const endContent = (
         <React.Fragment>
@@ -17,5 +17,3 @@ const TopBar = () => {
     );
   
 };
-
-export default TopBar;
