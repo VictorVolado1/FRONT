@@ -4,103 +4,143 @@ import { useDispatch, useSelector } from "react-redux";
 import UserService from "../../services/UserService";
 import { setError } from "../../slices/user";
 import { InputText } from "primereact/inputtext";
-import { Button } from 'primereact/button';
+import { Button } from "primereact/button";
+import { Message } from "primereact/message";
+import { Divider } from "primereact/divider";
 
 export const Login = () => {
-    const userService = new UserService();
-    const dispatch = useDispatch();
-    const { isLoading, error } = useSelector((state) => state.user);
-    const [isLogin, setIsLogin] = useState(true);
 
-    const {
-        email,
-        password,
-        onInputChange,
-        formState
-    } = useForm({
-        email: "",
-        password: "",
-    });
+	const userService = new UserService();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        dispatch(setError(null));
-        try {
-            userService.logInUser(formState);
-        } catch (err) {
-            dispatch(setError(err.message || "Error al iniciar sesión"));
-        }
-    };
+	const dispatch = useDispatch();
+	const { isLoading, error } = useSelector((state) => state.user);
+	const [isLogin, setIsLogin] = useState(true);
 
-    return (
-        <div
-            className="p-d-flex p-jc-center p-ai-center"
-            style={{ minHeight: '100vh', backgroundColor: '#f4f4f4' }}
-        >
-            <div
-                className="p-card p-shadow-5"
-                style={{ width: '100%', maxWidth: '400px', borderRadius: '10px' }}
-            >
-                <div className="p-card-body">
-                    <h2
-                        className="p-text-center"
-                        style={{ marginBottom: '20px', fontWeight: '600', fontSize: '24px' }}
-                    >
-                        Iniciar sesión
-                    </h2>
+	const {
+		email,
+		password,
+		name,
+		onInputChange,
+		formState
+	} = useForm({
+		email: "",
+		password: "",
+		name: ""
+	});
 
-                    {error && (
-                        <div
-                            className="p-alert p-alert-error"
-                            style={{ marginBottom: '10px' }}
-                        >
-                            {error}
-                        </div>
-                    )}
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		dispatch(setError(null));
+		try {
+			if (isLogin) {
+				userService.logInUser(formState);
+			} else {
+				userService.signUpUser(formState);
+			}
+		} catch (err) {
+			dispatch(setError(err.message || `Error al ${isLogin ? "iniciar sesión" : "registrarse"}`));
+		}
+	};
 
-                    <form onSubmit={handleSubmit}>
-                        <div className="p-field">
-                            <label htmlFor="email" className="p-text-bold">
-                                Correo electrónico
-                            </label>
-                            <InputText
-                                id="email"
-                                name="email"
-                                type="email"
-                                value={email}
-                                onChange={onInputChange}
-                                placeholder="Ingresa tu correo electrónico"
-                                className="p-inputtext p-component p-inputtext-sm"
-                                style={{ width: '100%', marginBottom: '10px' }}
-                            />
-                        </div>
-                        <div className="p-field">
-                            <label htmlFor="password" className="p-text-bold">
-                                Contraseña
-                            </label>
-                            <InputText
-                                id="password"
-                                name="password"
-                                type="password"
-                                value={password}
-                                onChange={onInputChange}
-                                placeholder="Ingresa tu contraseña"
-                                className="p-inputtext p-component p-inputtext-sm"
-                                style={{ width: '100%', marginBottom: '20px' }}
-                            />
-                        </div>
-                        <div className="p-d-flex p-jc-center">
-                            <Button
-                                label={isLoading ? "Cargando..." : "Iniciar sesión"}
-                                className="p-button p-button-rounded p-button-primary"
-                                style={{ width: '100%' }}
-                                disabled={isLoading}
-                                type="submit"
-                            />
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    );
+	const toggleFormMode = () => {
+		setIsLogin(!isLogin);
+		dispatch(setError(null));
+	};
+
+	return (
+		<div className="flex align-items-center justify-content-center min-h-screen bg-gray-100">
+			<div className="w-full md:w-6 lg:w-4" style={{ maxWidth: "400px" }}>
+				<div className="surface-card p-4 shadow-2 border-round">
+					<div className="text-center mb-5">
+						<div className="text-900 text-3xl font-medium mb-3">
+							{isLogin ? "Iniciar sesión" : "Registrarse"}
+						</div>
+						<span className="text-600 font-medium line-height-3">
+							{isLogin ? "Ingresa tus credenciales" : "Crea una nueva cuenta"}
+						</span>
+					</div>
+
+					{error && (
+						<Message
+							severity="error"
+							text={error}
+							className="w-full mb-3"
+						/>
+					)}
+
+					<form onSubmit={handleSubmit}>
+						{!isLogin && (
+							<div className="mb-3">
+								<label htmlFor="name" className="block text-900 font-medium mb-2">
+									Nombre de usuario
+								</label>
+								<InputText
+									id="name"
+									name="name"
+									value={name}
+									onChange={onInputChange}
+									placeholder="Tu nombre de usuario"
+									className="w-full"
+									required={!isLogin}
+								/>
+							</div>
+						)}
+
+						<div className="mb-3">
+							<label htmlFor="email" className="block text-900 font-medium mb-2">
+								Correo electrónico
+							</label>
+							<InputText
+								id="email"
+								name="email"
+								type="email"
+								value={email}
+								onChange={onInputChange}
+								placeholder="ejemplo@correo.com"
+								className="w-full"
+								required
+							/>
+						</div>
+
+						<div className="mb-5">
+							<label htmlFor="password" className="block text-900 font-medium mb-2">
+								Contraseña
+							</label>
+							<InputText
+								id="password"
+								name="password"
+								type="password"
+								value={password}
+								onChange={onInputChange}
+								placeholder="Ingresa tu contraseña"
+								className="w-full"
+								required
+							/>
+						</div>
+
+						<Button
+							label={isLoading ? "Cargando..." : (isLogin ? "Iniciar sesión" : "Registrarse")}
+							icon={isLoading ? "pi pi-spinner pi-spin" : (isLogin ? "pi pi-sign-in" : "pi pi-user-plus")}
+							className="w-full"
+							disabled={isLoading}
+							type="submit"
+						/>
+
+						<Divider align="center" className="my-3">
+							<span className="text-600 text-sm">O</span>
+						</Divider>
+
+						<div className="text-center">
+							<Button
+								label={isLogin ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión"}
+								link
+								className="p-0"
+								onClick={toggleFormMode}
+							/>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	);
 };

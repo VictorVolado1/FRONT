@@ -12,7 +12,7 @@ export default (method, url, data, params) => {
     development: import.meta.env.VITE_API_URL_DEV,
     local: import.meta.env.VITE_API_URL,
   };
-
+  console.log(headers)
   const apiUrl = urls[import.meta.env.VITE_ENV];
 
   return axios(apiUrl + url, {

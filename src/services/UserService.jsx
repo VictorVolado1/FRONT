@@ -14,11 +14,9 @@ class UserService {
 
   signUpUser(payload) {
     this.dispatch(setIsLoading(true));
-    return api('POST', 'auth/signup', payload)
+    return api('POST', 'auth/register', payload)
       .then((response) => {
-        localStorage.setItem('token', response.token);
         this.dispatch(setUser(response.user));
-        this.showToast('Se ha registrado correctamente!', 'success');
         this.navigate('/dashboard');
       })
       .catch((error) => {
@@ -31,9 +29,12 @@ class UserService {
 
   // Login de usuario
   logInUser(payload) {
+
     localStorage.removeItem('token');
-    this.dispatch(setIsLoading(true));
-    api('POST', 'auth/login', payload)
+
+    const { name, ...payloadWithoutName } = payload;
+    console.log(payloadWithoutName);
+    api('POST', 'auth/login', payloadWithoutName)
       .then((response) => {
         localStorage.setItem('token', response.token);
         this.dispatch(setUser(response.user));
@@ -41,11 +42,13 @@ class UserService {
         this.navigate('/tasks');
       })
       .catch((error) => {
+        console.error(error);
         this.dispatch(setError(error.response.data.description || error.message));
       })
       .finally(() => {
         this.dispatch(setIsLoading(false));
       });
+
   }
 
   // Cerrar sesion

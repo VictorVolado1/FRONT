@@ -17,7 +17,7 @@ class TasksService {
 
     this.dispatch(setIsLoading(true));
     
-    return api('POST', 'tasks/create', payload)
+    return api('POST', 'tasks/', payload)
       .then((response) => {
         this.showToast('Se ha registrado correctamente!', 'success');
         this.navigate('/tasks');
