@@ -22,7 +22,6 @@ class UserService {
       })
       .catch((error) => {
         this.dispatch(setError(error.response.data || error.message));
-        this.dispatch(setIsLoading(false));
       })
       .finally(() => {
         this.dispatch(setIsLoading(false));
@@ -31,6 +30,8 @@ class UserService {
 
   // Login de usuario
   logInUser(payload) {
+
+    this.dispatch(setIsLoading(true));
 
     localStorage.removeItem('token');
 
@@ -44,7 +45,15 @@ class UserService {
         this.navigate('/tasks');
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error.response.status);
+        if(error.response.status === 401) {
+          this.dispatch(setError('Usuario o contraseña incorrectos'));
+          return;
+        }
+        if(error.response.status === 400) {
+          this.dispatch(setError('La contraseña debe contener al menos 8 caracteres, una mayúscula, una minúscula y un caracter especial'));
+          return
+        }
         this.dispatch(setError(error.response.data.description || error.message));
       })
       .finally(() => {

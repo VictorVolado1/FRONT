@@ -19,7 +19,6 @@ class TasksService {
     return api('POST', 'tasks/', payload)
       .then((response) => {
         this.dispatch(clearTasks());
-        this.getTasks();
       })
       .catch((error) => {
         this.dispatch(setError(error.response?.data || error.message));
@@ -31,10 +30,12 @@ class TasksService {
       })
       .finally(() => {
         this.dispatch(setIsLoading(false));
+        this.getTasks();
       });
   }
 
   getTasks() {
+    this.dispatch(setIsLoading(true));
     return api('GET', 'tasks/')
       .then((response) => {
         if (response) {
@@ -43,7 +44,11 @@ class TasksService {
       })
       .catch((error) => {
         this.dispatch(setError(error.response.data || error.message));
-      });
+        this.dispatch(setIsLoading(true));
+      }).finally(() => {
+        this.dispatch(setIsLoading(false));
+      }
+      );
   }
 
   deleteTask(payload) {
@@ -59,12 +64,10 @@ class TasksService {
         this.dispatch(setError(error.response.data || error.message));
         this.dispatch(setIsLoading(false));
       })
-      .finally(() => {
-        this.dispatch(setIsLoading(false));
-      });
   }
 
   updateTask(payload) {
+
     this.dispatch(setIsLoading(true));
   
     const { id } = payload;
@@ -83,6 +86,7 @@ class TasksService {
       .finally(() => {
         this.dispatch(setIsLoading(false));
       });
+
   }
 
   clearTasks() {

@@ -12,12 +12,10 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 
 export const Tasks = () => {
-
 	const dispatch = useDispatch();
-
 	const toast = useRef(null);
-	
-	const { tasksList, error } = useSelector((state) => state.tasks);
+
+	const { tasksList, error, isLoading, success } = useSelector((state) => state.tasks);
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -37,31 +35,53 @@ export const Tasks = () => {
 
 	const confirmDelete = (task) => {
 		confirmDialog({
-			message: "¿Desea eliminar este pago?",
-			header: "Confirmación",
+			message: "¿Desea Eliminar la tarea?",
+			header: "Confirmación",
 			icon: "pi pi-exclamation-triangle",
 			accept: () => {
-				tasksService.deleteTask(task);
-				tasksService.getTasks();
+				tasksService.deleteTask(task)
+					.then(() => {
+						toast.current.show({
+							severity: "success",
+							summary: "Éxito",
+							detail: "Tarea eliminada correctamente"
+						});
+						tasksService.getTasks();
+					})
+					.catch(() => {
+						toast.current.show({
+							severity: "error",
+							summary: "Error",
+							detail: "Error al eliminar tarea"
+						});
+					});
 			},
 		});
 	};
 
 	const confirmUpdate = (task) => {
-		console.log('task', task);
 		confirmDialog({
 			message: "¿Desea finalizar la tarea?",
-			header: "Confirmación",
+			header: "Confirmación",
 			icon: "pi pi-exclamation-triangle",
 			accept: () => {
-				tasksService.updateTask(task);
-				tasksService.getTasks();
+				tasksService.updateTask(task)
+					.then(() => {
+						toast.current.show({
+							severity: "success",
+							summary: "Éxito",
+							detail: "Tarea actualizada correctamente"
+						});
+						tasksService.getTasks();
+					})
+					.catch(() => {
+						toast.current.show({
+							severity: "error",
+							summary: "Error",
+							detail: "Error al actualizar tarea"
+						});
+					});
 			},
-		});
-		toast.current.show({
-			severity: "success",
-			summary: "Actualizado",
-			detail: "Tarea finalizada",
 		});
 	};
 
@@ -109,14 +129,14 @@ export const Tasks = () => {
 					<Column field="id" header="ID" sortable />
 					<Column field="name" header="Nombre" sortable />
 					<Column field="description" header="Descripcion" sortable />
-					<Column 
-						field="completed" 
-						header="Estatus" 
+					<Column
+						field="completed"
+						header="Estatus"
 						sortable
 						body={({ completed }) => {
 							return completed ? "Finalizada" : "Pendiente";
-						}} 
-						/>
+						}}
+					/>
 					<Column
 						body={({ createdAt }) => {
 							return moment(createdAt).format("DD-MM-YYYY");

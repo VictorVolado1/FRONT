@@ -51,6 +51,7 @@ export const Login = () => {
 	};
 
 	const toggleFormMode = () => {
+		onResetForm();
 		setIsLogin(!isLogin);
 		dispatch(setError(null));
 	};
