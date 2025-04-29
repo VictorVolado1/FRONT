@@ -10,12 +10,14 @@ import { Dialog } from "primereact/dialog";
 import { TaskForm } from "../../components/TaskForm";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
+import { Tag } from "primereact/tag";
 
 export const Tasks = () => {
+	
 	const dispatch = useDispatch();
 	const toast = useRef(null);
 
-	const { tasksList, error, isLoading, success } = useSelector((state) => state.tasks);
+	const { tasksList } = useSelector((state) => state.tasks);
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -94,7 +96,7 @@ export const Tasks = () => {
 					tooltip="Terminar"
 					onClick={() => confirmUpdate(rowData)}
 					style={{ marginRight: ".5em", width: "2em", height: "2em" }}
-					disabled={rowData.covered}
+					disabled={rowData.completed}
 					tooltipOptions={{ position: "top" }}
 				/>
 				<Button
@@ -106,6 +108,16 @@ export const Tasks = () => {
 					style={{ width: "2em", height: "2em" }}
 				/>
 			</React.Fragment>
+		);
+	};
+
+	const statusBodyTemplate = (rowData) => {
+		return (
+			<Tag
+				value={rowData.completed ? "Finalizada" : "Pendiente"}
+				severity={rowData.completed ? "success" : "warning"}
+				icon={rowData.completed ? "pi pi-check" : "pi pi-clock"}
+			/>
 		);
 	};
 
@@ -133,9 +145,10 @@ export const Tasks = () => {
 						field="completed"
 						header="Estatus"
 						sortable
-						body={({ completed }) => {
-							return completed ? "Finalizada" : "Pendiente";
-						}}
+						body={statusBodyTemplate}
+						filter
+						filterMenuStyle={{ width: '14rem' }}
+						style={{ minWidth: '12rem' }}
 					/>
 					<Column
 						body={({ createdAt }) => {
@@ -168,7 +181,7 @@ export const Tasks = () => {
 				onHide={() => setIsModalOpen(false)}
 				breakpoints={{ "960px": "75vw", "641px": "90vw" }}
 			>
-				<TaskForm onClose={() => setIsModalOpen(false)} />
+				<TaskForm onClose={() => setIsModalOpen(false)} toast={toast} />
 			</Dialog>
 			<Toast ref={toast} />
 			<ConfirmDialog acceptLabel="Confirmar" rejectLabel="Cancelar" />

@@ -35,8 +35,10 @@ export const Login = () => {
 		dispatch(setError(null));
 		try {
 			if (isLogin) {
+				console.log('1');
 				userService.logInUser(formState);
 			} else {
+				console.log('2');
 				userService.signUpUser(formState);
 				setSuccessMessage("¡Registro exitoso! Redirigiendo...");
 				setTimeout(() => {

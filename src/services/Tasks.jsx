@@ -43,6 +43,9 @@ class TasksService {
         }
       })
       .catch((error) => {
+        if  (error.response.status === 401) {
+          this.navigate('/');
+        }
         this.dispatch(setError(error.response.data || error.message));
         this.dispatch(setIsLoading(true));
       }).finally(() => {
@@ -61,15 +64,15 @@ class TasksService {
         this.getTasks();
       })
       .catch((error) => {
+        if  (error.response.status === 401) {
+          this.navigate('/');
+        }
         this.dispatch(setError(error.response.data || error.message));
-        this.dispatch(setIsLoading(false));
       })
   }
 
   updateTask(payload) {
 
-    this.dispatch(setIsLoading(true));
-  
     const { id } = payload;
 
     const newPayload = {
@@ -78,14 +81,12 @@ class TasksService {
   
     return api('PATCH', `tasks/${id}/`, newPayload)
       .then((response) => {
+        this.clearTasks(); 
         this.getTasks();
       })
       .catch((error) => {
-        this.dispatch(setError(error.response?.data || error.message));
+        this.dispatch(setError(error.response.data || error.message));
       })
-      .finally(() => {
-        this.dispatch(setIsLoading(false));
-      });
 
   }
 

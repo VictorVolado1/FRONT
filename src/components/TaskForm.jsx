@@ -6,7 +6,7 @@ import { Message } from "primereact/message";
 import { setError } from "../slices/tasks";
 import TasksService from "../services/Tasks";
 
-export const TaskForm = ({onClose}) => {
+export const TaskForm = ({ onClose, toast }) => { // Recibe toast como prop
 
   const tasksService = new TasksService();
 
@@ -27,7 +27,16 @@ export const TaskForm = ({onClose}) => {
     e.preventDefault();
     dispatch(setError(null));
     try {
-      tasksService.createTask(formState);
+      await tasksService.createTask(formState); // Añade await aquí
+      
+      // Muestra el toast de éxito
+      toast.current.show({
+        severity: "success",
+        summary: "Éxito",
+        detail: "Tarea creada correctamente",
+        life: 3000
+      });
+      
       onClose();
     }
     catch (err) {
@@ -89,5 +98,4 @@ export const TaskForm = ({onClose}) => {
       </form>
     </div>
   );
-
 };
