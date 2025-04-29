@@ -1,27 +1,29 @@
 import React, { useState } from "react";
 import { useForm } from "../../hooks/useForm";
 import { useDispatch, useSelector } from "react-redux";
-import UserService from "../../services/UserService";
 import { setError } from "../../slices/user";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Message } from "primereact/message";
 import { Divider } from "primereact/divider";
+import UserService from "../../services/UserService";
 
 export const Login = () => {
-
+	
 	const userService = new UserService();
 
 	const dispatch = useDispatch();
 	const { isLoading, error } = useSelector((state) => state.user);
 	const [isLogin, setIsLogin] = useState(true);
+	const [successMessage, setSuccessMessage] = useState(null);
 
 	const {
 		email,
 		password,
 		name,
 		onInputChange,
-		formState
+		formState,
+		onResetForm
 	} = useForm({
 		email: "",
 		password: "",
@@ -36,6 +38,12 @@ export const Login = () => {
 				userService.logInUser(formState);
 			} else {
 				userService.signUpUser(formState);
+				setSuccessMessage("¡Registro exitoso! Redirigiendo...");
+				setTimeout(() => {
+					onResetForm();
+					setIsLogin(true);
+					setSuccessMessage(null);
+				}, 2000);
 			}
 		} catch (err) {
 			dispatch(setError(err.message || `Error al ${isLogin ? "iniciar sesión" : "registrarse"}`));
@@ -64,6 +72,13 @@ export const Login = () => {
 						<Message
 							severity="error"
 							text={error}
+							className="w-full mb-3"
+						/>
+					)}
+					{successMessage && (
+						<Message
+							severity="success"
+							text={successMessage}
 							className="w-full mb-3"
 						/>
 					)}

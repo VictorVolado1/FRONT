@@ -16,15 +16,10 @@ export const SearchBar = ({ onSearch, onAdd, onChange }) => {
     }
   };
 
-  const handleSearchTerm = (e) => {
-    onChange(e.target.value);
-  };
-
   return (
     <div className="flex align-items-center gap-2">
       <InputText
         placeholder="Buscar"
-        onChange={handleSearchTerm}
         onKeyDown={handleKeyDown}
         className="flex-1"
       />

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { useToast } from '../hooks/useToast';
-import { setIsLoading, setUser, logOut, setError } from '../slices/user';
+import { setIsLoading, setUser, clearUser, setError } from '../slices/user';
 import api from '../utils/api';
 
 class UserService {
@@ -13,14 +13,16 @@ class UserService {
   }
 
   signUpUser(payload) {
+
     this.dispatch(setIsLoading(true));
+
     return api('POST', 'auth/register', payload)
       .then((response) => {
-        this.dispatch(setUser(response.user));
-        this.navigate('/dashboard');
+        this.navigate('/');
       })
       .catch((error) => {
         this.dispatch(setError(error.response.data || error.message));
+        this.dispatch(setIsLoading(false));
       })
       .finally(() => {
         this.dispatch(setIsLoading(false));
@@ -52,11 +54,10 @@ class UserService {
   }
 
   // Cerrar sesion
-  logOutUser() {
+  clearUser() {
     localStorage.removeItem('token');
-    this.dispatch(logOut());
+    this.dispatch(clearUser());
     this.navigate('/login');
-    this.showToast('Se ha cerrado la sesión correctamente!', 'success');
   }
 
   // Obtener usuario de la sesion

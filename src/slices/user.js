@@ -9,7 +9,7 @@ const userSlice = createSlice({
     error: null,
   },
   reducers: {
-    logOut: (state) => {
+    clearUser: (state) => {
       state.user = {};
       state.roles = [];
       state.isLoading = false;
@@ -31,4 +31,4 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const { logOut, setUser, setIsLoading, setError } = userSlice.actions;
+export const { clearUser, setUser, setIsLoading, setError } = userSlice.actions;

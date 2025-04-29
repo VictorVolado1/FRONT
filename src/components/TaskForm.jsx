@@ -82,6 +82,9 @@ export const TaskForm = ({onClose}) => {
           className="w-full"
           disabled={isLoading}
           type="submit"
+          severity="info"
+          icon="pi pi-save"
+          loading={isLoading}
         />
       </form>
     </div>

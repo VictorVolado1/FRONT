@@ -1,15 +1,21 @@
 import moment from "moment";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import TasksService from '../../services/Tasks';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from "primereact/button";
 import { SearchBar } from "../../components/SearchBar";
 import { Dialog } from "primereact/dialog";
 import { TaskForm } from "../../components/TaskForm";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
 
 export const Tasks = () => {
+
+	const dispatch = useDispatch();
+
+	const toast = useRef(null);
 	
 	const { tasksList, error } = useSelector((state) => state.tasks);
 
@@ -29,6 +35,36 @@ export const Tasks = () => {
 		};
 	}, []);
 
+	const confirmDelete = (task) => {
+		confirmDialog({
+			message: "¿Desea eliminar este pago?",
+			header: "Confirmación",
+			icon: "pi pi-exclamation-triangle",
+			accept: () => {
+				tasksService.deleteTask(task);
+				tasksService.getTasks();
+			},
+		});
+	};
+
+	const confirmUpdate = (task) => {
+		console.log('task', task);
+		confirmDialog({
+			message: "¿Desea finalizar la tarea?",
+			header: "Confirmación",
+			icon: "pi pi-exclamation-triangle",
+			accept: () => {
+				tasksService.updateTask(task);
+				tasksService.getTasks();
+			},
+		});
+		toast.current.show({
+			severity: "success",
+			summary: "Actualizado",
+			detail: "Tarea finalizada",
+		});
+	};
+
 	const actionBodyTemplate = (rowData) => {
 		return (
 			<React.Fragment>
@@ -36,7 +72,7 @@ export const Tasks = () => {
 					icon="pi pi-check"
 					className="p-button-rounded p-button-success"
 					tooltip="Terminar"
-					onClick={() => null}
+					onClick={() => confirmUpdate(rowData)}
 					style={{ marginRight: ".5em", width: "2em", height: "2em" }}
 					disabled={rowData.covered}
 					tooltipOptions={{ position: "top" }}
@@ -45,7 +81,7 @@ export const Tasks = () => {
 					icon="pi pi-trash"
 					className="p-button-rounded p-button-danger"
 					tooltip="Eliminar tarea"
-					onClick={() => null}
+					onClick={() => confirmDelete(rowData)}
 					tooltipOptions={{ position: "top" }}
 					style={{ width: "2em", height: "2em" }}
 				/>
@@ -73,6 +109,14 @@ export const Tasks = () => {
 					<Column field="id" header="ID" sortable />
 					<Column field="name" header="Nombre" sortable />
 					<Column field="description" header="Descripcion" sortable />
+					<Column 
+						field="completed" 
+						header="Estatus" 
+						sortable
+						body={({ completed }) => {
+							return completed ? "Finalizada" : "Pendiente";
+						}} 
+						/>
 					<Column
 						body={({ createdAt }) => {
 							return moment(createdAt).format("DD-MM-YYYY");
@@ -104,9 +148,10 @@ export const Tasks = () => {
 				onHide={() => setIsModalOpen(false)}
 				breakpoints={{ "960px": "75vw", "641px": "90vw" }}
 			>
-				<TaskForm  onClose={() => setIsModalOpen(false)}/>
+				<TaskForm onClose={() => setIsModalOpen(false)} />
 			</Dialog>
-
+			<Toast ref={toast} />
+			<ConfirmDialog acceptLabel="Confirmar" rejectLabel="Cancelar" />
 		</div>
 	);
 };

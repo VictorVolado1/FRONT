@@ -18,12 +18,7 @@ class TasksService {
     
     return api('POST', 'tasks/', payload)
       .then((response) => {
-        this.showToast({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Tarea creada correctamente'
-        });
-        this.clearTasks(); 
+        this.dispatch(clearTasks());
         this.getTasks();
       })
       .catch((error) => {
@@ -48,6 +43,45 @@ class TasksService {
       })
       .catch((error) => {
         this.dispatch(setError(error.response.data || error.message));
+      });
+  }
+
+  deleteTask(payload) {
+
+    this.dispatch(setIsLoading(true));
+    
+    return api('DELETE', `tasks/${payload.id}/`)
+      .then(() => {
+        this.clearTasks(); 
+        this.getTasks();
+      })
+      .catch((error) => {
+        this.dispatch(setError(error.response.data || error.message));
+        this.dispatch(setIsLoading(false));
+      })
+      .finally(() => {
+        this.dispatch(setIsLoading(false));
+      });
+  }
+
+  updateTask(payload) {
+    this.dispatch(setIsLoading(true));
+  
+    const { id } = payload;
+
+    const newPayload = {
+      completed: true
+    }
+  
+    return api('PATCH', `tasks/${id}/`, newPayload)
+      .then((response) => {
+        this.getTasks();
+      })
+      .catch((error) => {
+        this.dispatch(setError(error.response?.data || error.message));
+      })
+      .finally(() => {
+        this.dispatch(setIsLoading(false));
       });
   }
 
