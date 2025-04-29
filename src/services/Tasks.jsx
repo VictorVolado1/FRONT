@@ -94,6 +94,38 @@ class TasksService {
     this.dispatch(clearTasks());
   }
 
+  exportTasks(payload) {
+    return api('POST', 'tasks/export/', payload, {}, {
+      responseType: 'blob',
+    }).then((response) => {
+      const blob = new Blob([response.data], {
+        type: response.headers['content-type'] || 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+  
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+  
+      const disposition = response.headers['content-disposition'];
+      let filename = 'tareas.xlsx';
+      if (disposition && disposition.includes('filename=')) {
+        filename = disposition.split('filename=')[1].replace(/["']/g, '');
+      }
+  
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }).catch((error) => {
+      if (error.response?.status === 401) {
+        this.navigate('/');
+      }
+      this.dispatch(setError(error.response?.data || error.message));
+    });
+  }
+  
+  
+
 }
 
 export default TasksService;

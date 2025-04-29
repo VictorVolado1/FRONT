@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default (method, url, data, params) => {
+export default (method, url, data, params = {}, options = {}) => {
 
   const headers = {};
   if (localStorage.getItem("token")) {
@@ -20,8 +20,17 @@ export default (method, url, data, params) => {
     headers,
     data: data || "",
     params: params || "",
+    responseType: options.responseType || 'json',
   })
-    .then((response) => response.data)
+    .then((response) => {
+      if (options.responseType === 'blob') {
+        return {
+          data: response.data,
+          headers: response.headers,
+        };
+      }
+      return response.data;
+    })
     .catch((error) => {
       throw error;
     });

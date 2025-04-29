@@ -15,14 +15,12 @@ class UserService {
   signUpUser(payload) {
     return api('POST', 'auth/register', payload)
       .then((response) => {
-        console.log(response);
         this.navigate('/');
       })
       .catch((error) => {
         this.dispatchError(error);
       })
       .finally(() => {
-        console.log('finally');
       });
   }
 
