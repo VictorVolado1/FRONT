@@ -10,7 +10,7 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Tag } from "primereact/tag";
 import { AccordionExportTasks } from "../../components/tasks-components/Accordion";
 import TasksService from '../../services/Tasks';
-import { TopBar } from "../../components/tasks-components/TopBar";
+import { TopBar } from "../../components/TopBar";
 
 export const Tasks = () => {
 

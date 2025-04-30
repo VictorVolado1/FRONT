@@ -2,7 +2,7 @@ import React from 'react';
 import { Menubar } from 'primereact/menubar';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { clearUser } from '../../slices/user';
+import { clearUser } from '../slices/user';
 
 export const TopBar = () => {
   const dispatch = useDispatch();
