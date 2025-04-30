@@ -10,6 +10,7 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Tag } from "primereact/tag";
 import { AccordionExportTasks } from "../../components/tasks-components/Accordion";
 import TasksService from '../../services/Tasks';
+import { TopBar } from "../../components/tasks-components/TopBar";
 
 export const Tasks = () => {
 
@@ -108,6 +109,7 @@ export const Tasks = () => {
 
 	return (
 		<div>
+			<TopBar/>
 			<div style={{ width: "80%", margin: "0 auto" }}>
 				<AccordionExportTasks />
 				<DataTable

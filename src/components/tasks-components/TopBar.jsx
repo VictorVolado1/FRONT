@@ -1,12 +1,10 @@
 import React from 'react';
 import { Menubar } from 'primereact/menubar';
-import { Avatar } from 'primereact/avatar';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { clearUser } from '../../slices/user';
 
 export const TopBar = () => {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -18,8 +16,8 @@ export const TopBar = () => {
 
   const items = [
     {
-      label: 'Opciones',
-      icon: 'pi pi-cog',
+      label: 'Usuario', // Movemos la etiqueta de usuario aquí
+      icon: 'pi pi-user',
       items: [
         {
           label: 'Cerrar sesión',
@@ -31,12 +29,10 @@ export const TopBar = () => {
   ];
 
   const start = (
-    <div className="flex align-items-center gap-2">
-      <Avatar icon="pi pi-user" shape="circle" />
-      <span className="font-bold">Mi Aplicación</span>
+    <div className="flex items-center gap-2 pl-4">
+      <span className="font-bold text-lg">MI APP</span>
     </div>
   );
 
-  return <Menubar model={items} start={start} />;
-
+  return <Menubar model={items} start={start} style={{justifyContent: "space-between", marginBottom: "1rem"}}/>;
 };
