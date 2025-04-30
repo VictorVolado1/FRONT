@@ -17,10 +17,6 @@ Aplicación backend desarrollada con React + vite +  PrimeReact
 ▶️ Ejecución
 1. npm run dev
 
-.env
-VITE_ENV=development
-VITE_API_URL_DEV=http://localhost:3000/api/
-
 El fron end estará disponible por defecto en:
 📍   Local:   http://localhost:5173/  otros http://localhost:5174/ http://localhost:5175/
 
