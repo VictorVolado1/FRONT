@@ -1,10 +1,10 @@
-import { useForm } from "../hooks/useForm";
+import { useForm } from "../../hooks/useForm";
 import { useSelector, useDispatch } from "react-redux";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Message } from "primereact/message";
-import { setError } from "../slices/tasks";
-import TasksService from "../services/Tasks";
+import { setError } from "../../slices/tasks";
+import TasksService from "../../services/Tasks";
 
 export const TaskForm = ({ onClose }) => {
 

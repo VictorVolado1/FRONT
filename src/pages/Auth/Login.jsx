@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "../../hooks/useForm";
 import { useSelector } from "react-redux";
 import { InputText } from "primereact/inputtext";
@@ -11,9 +11,9 @@ export const Login = () => {
 
 	const userService = new UserService();
 
-	const { isLoading, error, success } = useSelector((state) => state.user);
+	const { isLoading, loginInfo  } = useSelector((state) => state.user);
 	const [isLogin, setIsLogin] = useState(true);
-	
+
 	const {
 		email,
 		password,
@@ -27,25 +27,32 @@ export const Login = () => {
 		name: ""
 	});
 
+	useEffect(() => {
+		if (loginInfo.severity === "success") {
+			setTimeout(() => {
+				userService.clearUser();
+				setIsLogin(true);
+				onResetForm();
+			}
+			, 2000);
+		}
+		
+	}, [loginInfo]);
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 	  
 		if (isLogin) {
 		  userService.logInUser(formState);
 		} else {
-		  const wasSuccessful = await userService.signUpUser(formState);
-		  if (wasSuccessful) {
-			onResetForm();          
-			userService.clearUser();
-			setIsLogin(true);
-		  }
+		  await userService.signUpUser(formState);
 		}
 	  };
 
 	const toggleFormMode = () => {
 		onResetForm();
-		userService.clearUser();
 		setIsLogin(!isLogin);
+		userService.clearUser();
 	};
 
 	return (
@@ -61,17 +68,10 @@ export const Login = () => {
 						</span>
 					</div>
 
-					{error && (
+					{loginInfo && (
 						<Message
-							severity="error"
-							text={error}
-							className="w-full mb-3"
-						/>
-					)}
-					{success && (
-						<Message
-							severity="success"
-							text={success}
+							severity={loginInfo.severity}
+							text={loginInfo.message}
 							className="w-full mb-3"
 						/>
 					)}

@@ -3,7 +3,7 @@ import { Accordion, AccordionTab } from 'primereact/accordion';
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
 import { Button } from "primereact/button";
-import TasksService from '../services/Tasks';
+import TasksService from '../../services/Tasks';
 
 export const AccordionExportTasks = () => {
 

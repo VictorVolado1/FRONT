@@ -5,10 +5,10 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import { TaskForm } from "../../components/TaskForm";
+import { TaskForm } from "../../components/tasks-components/TaskForm";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Tag } from "primereact/tag";
-import { AccordionExportTasks } from "../../components/Accordion";
+import { AccordionExportTasks } from "../../components/tasks-components/Accordion";
 import TasksService from '../../services/Tasks';
 
 export const Tasks = () => {
