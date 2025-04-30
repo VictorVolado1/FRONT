@@ -1,12 +1,37 @@
-# React + Vite
+📝 Task App - Prueba Técnica
+Aplicación backend desarrollada con React + vite +  PrimeReact
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🚀 Características
+1. Componentes PrimeReact
+2. Axios
+3. Redux
+4. Gestión y resporte de tareas.
+5. React Router
 
-Currently, two official plugins are available:
+📦 Instalación
+1. git clone https://github.com/VictorVolado1/FRONT.git
+2. cd FRONT
+3. npm install
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+  ```env
+▶️ Ejecución
+1. npm run dev
 
-## Expanding the ESLint configuration
+El fron end estará disponible por defecto en:
+📍   Local:   http://localhost:5173/  otros http://localhost:5174/ http://localhost:5175/
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+📁 Estructura de Carpetas del Proyecto
+src/
+├── components/   
+├── hooks/          
+├── pages/       
+├── router/
+├── services/
+├── slices/
+├── store/
+├── utils/      
+├── app.jsx
+├── main.jsx    
+
+Versión de Node.js recomendada: 18.x o superior
+Óptimo: Node 18.x (LTS) o Node 20.x (actual LTS).
