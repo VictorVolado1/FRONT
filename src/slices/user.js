@@ -7,6 +7,7 @@ const userSlice = createSlice({
     roles: [],
     isLoading: false,
     error: null,
+    success: null
   },
   reducers: {
     clearUser: (state) => {
@@ -14,6 +15,7 @@ const userSlice = createSlice({
       state.roles = [];
       state.isLoading = false;
       state.error = null;
+      state.success = null;
     },
     setRoles: (state, action) => {
       state.roles = action.payload;
@@ -27,8 +29,11 @@ const userSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
+    setSuccess: (state, action) => {
+      state.success = action.payload;
+    },
   },
 });
 
 export default userSlice.reducer;
-export const { clearUser, setUser, setIsLoading, setError } = userSlice.actions;
+export const { clearUser, setUser, setIsLoading, setError, setSuccess } = userSlice.actions;

@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "../../hooks/useForm";
-import { useDispatch, useSelector } from "react-redux";
-import { setError } from "../../slices/user";
+import { useSelector } from "react-redux";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Message } from "primereact/message";
@@ -9,14 +8,12 @@ import { Divider } from "primereact/divider";
 import UserService from "../../services/UserService";
 
 export const Login = () => {
-	
+
 	const userService = new UserService();
 
-	const dispatch = useDispatch();
-	const { isLoading, error } = useSelector((state) => state.user);
+	const { isLoading, error, success } = useSelector((state) => state.user);
 	const [isLogin, setIsLogin] = useState(true);
-	const [successMessage, setSuccessMessage] = useState(null);
-
+	
 	const {
 		email,
 		password,
@@ -32,28 +29,23 @@ export const Login = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		dispatch(setError(null));
-		try {
-			if (isLogin) {
-				userService.logInUser(formState);
-			} else {
-				userService.signUpUser(formState);
-				setSuccessMessage("¡Registro exitoso! Redirigiendo...");
-				setTimeout(() => {
-					onResetForm();
-					setIsLogin(true);
-					setSuccessMessage(null);
-				}, 2000);
-			}
-		} catch (err) {
-			dispatch(setError(err.message || `Error al ${isLogin ? "iniciar sesión" : "registrarse"}`));
+	  
+		if (isLogin) {
+		  userService.logInUser(formState);
+		} else {
+		  const wasSuccessful = await userService.signUpUser(formState);
+		  if (wasSuccessful) {
+			onResetForm();          
+			userService.clearUser();
+			setIsLogin(true);
+		  }
 		}
-	};
+	  };
 
 	const toggleFormMode = () => {
 		onResetForm();
+		userService.clearUser();
 		setIsLogin(!isLogin);
-		dispatch(setError(null));
 	};
 
 	return (
@@ -76,10 +68,10 @@ export const Login = () => {
 							className="w-full mb-3"
 						/>
 					)}
-					{successMessage && (
+					{success && (
 						<Message
 							severity="success"
-							text={successMessage}
+							text={success}
 							className="w-full mb-3"
 						/>
 					)}

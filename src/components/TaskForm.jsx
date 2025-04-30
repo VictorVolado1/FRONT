@@ -6,12 +6,12 @@ import { Message } from "primereact/message";
 import { setError } from "../slices/tasks";
 import TasksService from "../services/Tasks";
 
-export const TaskForm = ({ onClose, toast }) => {
+export const TaskForm = ({ onClose }) => {
 
   const tasksService = new TasksService();
 
   const dispatch = useDispatch();
-  const { isLoading, error } = useSelector((state) => state.user);
+  const { isLoading, error } = useSelector((state) => state.tasks);
 
   const { 
     name, 
@@ -25,16 +25,9 @@ export const TaskForm = ({ onClose, toast }) => {
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
-    dispatch(setError(null));
+
     try {
       await tasksService.createTask(formState);
-      
-      toast.current.show({
-        severity: "success",
-        summary: "Éxito",
-        detail: "Tarea creada correctamente",
-        life: 3000
-      });
       
       onClose();
     }
@@ -63,6 +56,8 @@ export const TaskForm = ({ onClose, toast }) => {
             placeholder="nombre"
             className="w-full"
             required
+            onInvalid={(e) => e.target.setCustomValidity('El Nombre es obligatorio')}
+            onInput={(e) => e.target.setCustomValidity('')}
           />
         </div>
 
@@ -82,6 +77,8 @@ export const TaskForm = ({ onClose, toast }) => {
             placeholder="Descripción"
             className="w-full"
             required
+            onInvalid={(e) => e.target.setCustomValidity('La descripción es obligatoria')}
+            onInput={(e) => e.target.setCustomValidity('')}
           />
         </div>
 
@@ -93,6 +90,7 @@ export const TaskForm = ({ onClose, toast }) => {
           severity="info"
           icon="pi pi-save"
           loading={isLoading}
+          outlined
         />
       </form>
     </div>

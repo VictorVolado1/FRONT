@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
-import { useToast } from '../hooks/useToast';
 import { clearTasks, setError, setTasks } from '../slices/tasks';
 import { setIsLoading } from '../slices/tasks';
+import { showToast } from '../utils/toastService';
+
 import api from '../utils/api';
 
 class TasksService {
@@ -10,7 +11,6 @@ class TasksService {
   constructor() {
     this.dispatch = useDispatch();
     this.navigate = useNavigate();
-    this.showToast = useToast().showToast;
   }
 
   createTask(payload) {
@@ -18,18 +18,15 @@ class TasksService {
     
     return api('POST', 'tasks/', payload)
       .then((response) => {
-        this.dispatch(clearTasks());
+        showToast('success', 'Tarea creada', 'La tarea fue creada correctamente');
       })
       .catch((error) => {
         this.dispatch(setError(error.response?.data || error.message));
-        this.showToast({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.response?.data?.message || 'Error al crear tarea'
-        });
+        showToast('error', 'Error', 'Error al crear la tarea');
       })
       .finally(() => {
         this.dispatch(setIsLoading(false));
+        this.clearTasks();
         this.getTasks();
       });
   }
@@ -38,16 +35,13 @@ class TasksService {
     this.dispatch(setIsLoading(true));
     return api('GET', 'tasks/')
       .then((response) => {
-        if (response) {
           this.dispatch(setTasks(response));
-        }
       })
       .catch((error) => {
         if  (error.response.status === 401) {
           this.navigate('/');
         }
-        this.dispatch(setError(error.response.data || error.message));
-        this.dispatch(setIsLoading(true));
+        showToast('error', 'Tarea creada', 'La tarea fue creada correctamente');
       }).finally(() => {
         this.dispatch(setIsLoading(false));
       }
@@ -57,9 +51,10 @@ class TasksService {
   deleteTask(payload) {
 
     this.dispatch(setIsLoading(true));
-    
+    console.log('entro')
     return api('DELETE', `tasks/${payload.id}/`)
       .then(() => {
+        showToast('success', 'Tarea eliminada', 'La tarea fue eliminada correctamente');        
         this.clearTasks(); 
         this.getTasks();
       })
@@ -67,7 +62,6 @@ class TasksService {
         if  (error.response.status === 401) {
           this.navigate('/');
         }
-        this.dispatch(setError(error.response.data || error.message));
       })
   }
 
@@ -83,9 +77,10 @@ class TasksService {
       .then((response) => {
         this.clearTasks(); 
         this.getTasks();
+        showToast('success', 'Tarea actualizada', 'La tarea fue actualizada correctamente');
       })
       .catch((error) => {
-        this.dispatch(setError(error.response.data || error.message));
+        showToast('error', 'Error', 'Error al actualizar la tarea');
       })
 
   }
@@ -116,16 +111,15 @@ class TasksService {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      showToast('success', 'Exportación exitosa', 'Las tareas fueron exportadas correctamente');
     }).catch((error) => {
       if (error.response?.status === 401) {
         this.navigate('/');
       }
-      this.dispatch(setError(error.response?.data || error.message));
+      showToast('error', 'Error', 'Error al exportar las tareas');
     });
   }
   
-  
-
 }
 
 export default TasksService;
